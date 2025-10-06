@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "name": "Blueberry Set",
+        "price": 25.99,
+        "imgUrl": "/imgs/cosmetic01.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Citrus Set",
+        "price": 19.99,
+        "imgUrl": "/imgs/cosmetic02.jpg"
+    },
+    {
+        "id": 3,
+        "name": "Grape Set",
+        "price": 29.99,
+        "imgUrl": "/imgs/cosmetic03.jpg"
+    },
+    {
+        "id": 4,
+        "name": "Orange Set",
+        "price": 25.99,
+        "imgUrl": "/imgs/cosmetic04.jpg"
+    },
+    {
+        "id": 5,
+        "name": "Caramel Set",
+        "price": 29.99,
+        "imgUrl": "/imgs/cosmetic05.jpg"
+    },{
+        "id": 6,
+        "name": "Strawberry Set",
+        "price": 25.00,
+        "imgUrl": "/imgs/cosmetic06.jpg"
+    }
+]
