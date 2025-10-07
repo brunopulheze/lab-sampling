@@ -184,7 +184,7 @@ export function AuthBar({ bgColor = "#f7d7da" }: AuthBarProps) {
                 </div>
             </div>
             {/* Modal for small screens */}
-            <AuthModal show={showModal} onHide={() => setShowModal(false)} />
+            <AuthModal show={showModal} onHide={() => setShowModal(false)} bgColor={bgColor} />
         </div>
     )
 }

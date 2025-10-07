@@ -14,9 +14,10 @@ function capitalizeName(name: string) {
 interface AuthModalProps {
     show: boolean
     onHide: () => void
+    bgColor?: string
 }
 
-export function AuthModal({ show, onHide }: AuthModalProps) {
+export function AuthModal({ show, onHide, bgColor = "#f7d7da" }: AuthModalProps) {
     const [loginForm, setLoginForm] = useState({ email: "", password: "" })
     const [registerForm, setRegisterForm] = useState({ name: "", email: "", password: "" })
     const [showRegister, setShowRegister] = useState(false)
@@ -90,9 +91,6 @@ export function AuthModal({ show, onHide }: AuthModalProps) {
             setRegisterError(err?.response?.data?.detail || "Registration failed.")
         }
     }
-
-    // Modal background color
-    const bgColor = "#f7d7da"
 
     return (
         <Modal
