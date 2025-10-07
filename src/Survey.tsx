@@ -1,180 +1,240 @@
-import React, { useState } from 'react';
-import api from "./api/axios"; // Import your configured axios instance
+import React, { useState } from "react";
+import api from "./api/axios";
 
-interface SurveyData {
-    preferredAuthBar: 'A' | 'B' | '';
-    preferredCartIcon: 'A' | 'B' | '';
-    preferredDrawerSide: 'A' | 'B' | '';
-    preferredButtonColor: 'A' | 'B' | '';
-    preferredFooterBg: 'A' | 'B' | '';
-    comments: string;
-}
+const initialState = {
+    preferredLayout: "",
+    shoppingFrequency: "",
+    favoriteDevice: "",
+    influencingFactors: [] as string[],
+    satisfactionLevel: "",
+    comments: "",
+};
 
-const questions = [
-    {
-        name: "preferredAuthBar",
-        label: "Which authentication bar background color felt most appealing to you?",
-        options: [{ value: "A", label: "Style A" }, { value: "B", label: "Style B" }]
-    },
-    {
-        name: "preferredCartIcon",
-        label: "Which shopping cart icon caught your attention?",
-        options: [{ value: "A", label: "Icon A" }, { value: "B", label: "Icon B" }]
-    },
-    {
-        name: "preferredDrawerSide",
-        label: "Did you prefer the shopping cart drawer opening from the right or left side?",
-        options: [{ value: "A", label: "Right (Version A)" }, { value: "B", label: "Left (Version B)" }]
-    },
-    {
-        name: "preferredButtonColor",
-        label: "Which style of action button looked better to you?",
-        options: [{ value: "A", label: "Button A" }, { value: "B", label: "Button B" }]
-    },
-    {
-        name: "preferredFooterBg",
-        label: "Which footer background color created a nicer finishing touch?",
-        options: [{ value: "A", label: "Footer A" }, { value: "B", label: "Footer B" }]
-    }
+const factors = [
+    "Price",
+    "Product Reviews",
+    "Fast Delivery",
+    "Website Usability",
+    "Brand Reputation",
+    "Promotions/Discounts",
 ];
 
-export const Survey: React.FC = () => {
-    const [data, setData] = useState<SurveyData>({
-        preferredAuthBar: '',
-        preferredCartIcon: '',
-        preferredDrawerSide: '',
-        preferredButtonColor: '',
-        preferredFooterBg: '',
-        comments: '',
-    });
+const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    borderRadius: "8px",
+    padding: "1.5rem",
+    marginBottom: "1.2rem",
+    maxWidth: 500,
+    marginLeft: "auto",
+    marginRight: "auto",
+    border: "1px solid #ccc",
+};
+
+const labelStyle: React.CSSProperties = {
+    fontWeight: 500,
+    display: "block",
+    marginBottom: "0.5em",
+};
+
+export function Survey() {
+    const [form, setForm] = useState(initialState);
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState("");
 
-    // Validation: all questions except comments must be answered
-    const allAnswered = questions.every(q => (data as any)[q.name] !== '');
+    // All required except comments
+    const allAnswered =
+        !!form.preferredLayout &&
+        !!form.shoppingFrequency &&
+        !!form.favoriteDevice &&
+        !!form.satisfactionLevel;
 
     const handleChange = (
-        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
     ) => {
-        setData({ ...data, [e.target.name]: e.target.value });
+        const { name, value, type } = e.target;
+        if (type === "checkbox") {
+            const checked = (e.target as HTMLInputElement).checked;
+            setForm((f) => ({
+                ...f,
+                influencingFactors: checked
+                    ? [...f.influencingFactors, value]
+                    : f.influencingFactors.filter((fac) => fac !== value),
+            }));
+        } else {
+            setForm((f) => ({ ...f, [name]: value }));
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!allAnswered) {
-            setError("Please answer all questions before submitting.");
+            setError("Please answer all required questions before submitting.");
             return;
         }
+        setError("");
         try {
-            await api.post("/survey", data);
+            await api.post("/survey", form);
             setSubmitted(true);
-        } catch (error) {
+        } catch {
             setError("Failed to submit survey. Please try again.");
         }
     };
 
-    if (submitted) {
+    if (submitted)
         return (
-            <div
-                style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    width: '100%',
-                    backgroundColor: '#ffffff',
-                    padding: '1rem',
-                    borderBottomLeftRadius: '8px',
-                    borderBottomRightRadius: '8px'
-                }}
-            >
-                <div className="bg-white" style={{ fontSize: "1.25rem", textAlign: "center", margin: "2rem 0" }}>
-                    Thank you for your feedback! Your answers have been submitted successfully.
-                </div>
+            <div style={{ ...cardStyle, textAlign: "center", marginTop: "3rem" }}>
+                <h2>Thank you for participating!</h2>
+                <p>Your answers have been submitted successfully.</p>
             </div>
         );
-    }
 
     return (
-        <div
-            style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                width: '100%',
-            }}
-        >
-            <form
-                onSubmit={handleSubmit}
-                className='bg-white'
-                style={{
-                    padding: '2rem',
-                    borderBottomLeftRadius: '8px',
-                    borderBottomRightRadius: '8px',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.07)',
-                }}
-            >
-                <h3 className='text-center mb-4'>Survey</h3>
-                <div className="row g-3">
-                    {questions.map(({ name, label, options }) => (
-                        <div key={name} className="col-12">
-                            <div className="card shadow-sm">
-                                <div className="card-body">
-                                    <label className="fw-bold mb-2">{label}</label>
-                                    <div className="d-flex align-items-center" style={{ gap: "2rem" }}>
-                                        {options.map(opt => (
-                                            <div key={opt.value}>
-                                                <input
-                                                    type="radio"
-                                                    name={name}
-                                                    value={opt.value}
-                                                    checked={(data as any)[name] === opt.value}
-                                                    onChange={handleChange}
-                                                    id={`${name}_${opt.value}`}
-                                                    className="form-check-input me-1"
-                                                />
-                                                <label htmlFor={`${name}_${opt.value}`} className="form-check-label">{opt.label}</label>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                    <div className="col-12">
-                        <div className="card shadow-sm">
-                            <div className="card-body">
-                                <label htmlFor="comments" className="fw-bold mb-2">
-                                    Any comments or suggestions about your experience?
-                                </label>
-                                <textarea
-                                    name="comments"
-                                    id="comments"
-                                    value={data.comments}
-                                    onChange={handleChange}
-                                    rows={3}
-                                    style={{ width: '100%', resize: 'vertical' }}
-                                    className="form-control mt-2"
-                                />
-                            </div>
-                        </div>
-                    </div>
+        <form onSubmit={handleSubmit} style={{ backgroundColor: "#ffffff", maxWidth: 540, margin: "2.5rem auto" }}>
+            <h3 style={{ textAlign: "center", fontWeight: 700, marginBottom: "1.5rem" }}>Survey</h3>
+
+            <div style={cardStyle}>
+                <label style={labelStyle}>Which layout do you prefer?</label>
+                <div>
+                    <label style={{ marginRight: "1.5em" }}>
+                        <input
+                            type="radio"
+                            name="preferredLayout"
+                            value="A"
+                            checked={form.preferredLayout === "A"}
+                            onChange={handleChange}
+                        />{" "}
+                        Layout A
+                    </label>
+                    <label>
+                        <input
+                            type="radio"
+                            name="preferredLayout"
+                            value="B"
+                            checked={form.preferredLayout === "B"}
+                            onChange={handleChange}
+                        />{" "}
+                        Layout B
+                    </label>
                 </div>
-                {error && (
-                    <div className="text-danger text-center mt-3" style={{ fontSize: "1rem" }}>
-                        {error}
+            </div>
+
+            <div style={cardStyle}>
+                <label style={labelStyle}>How often do you shop online?</label>
+                <select
+                    name="shoppingFrequency"
+                    value={form.shoppingFrequency}
+                    onChange={handleChange}
+                    style={{ width: "100%", padding: "0.5em", borderRadius: 4, border: "1px solid #ddd" }}
+                >
+                    <option value="">Select...</option>
+                    <option value="Daily">Daily</option>
+                    <option value="Weekly">Weekly</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Rarely">Rarely</option>
+                    <option value="Never">Never</option>
+                </select>
+            </div>
+
+            <div style={cardStyle}>
+                <label style={labelStyle}>What is your favorite device for online shopping?</label>
+                <select
+                    name="favoriteDevice"
+                    value={form.favoriteDevice}
+                    onChange={handleChange}
+                    style={{ width: "100%", padding: "0.5em", borderRadius: 4, border: "1px solid #ddd" }}
+                >
+                    <option value="">Select...</option>
+                    <option value="Desktop/Laptop">Desktop/Laptop</option>
+                    <option value="Smartphone">Smartphone</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div style={cardStyle}>
+                <label style={labelStyle}>
+                    What factors most influence your decision to buy online? <span style={{ fontWeight: 400 }}>(Select all that apply)</span>
+                </label>
+                <div>
+                    {factors.map((fac) => (
+                        <label key={fac} style={{ marginRight: "1em", display: "inline-block" }}>
+                            <input
+                                type="checkbox"
+                                name="influencingFactors"
+                                value={fac}
+                                checked={form.influencingFactors.includes(fac)}
+                                onChange={handleChange}
+                            />{" "}
+                            {fac}
+                        </label>
+                    ))}
+                </div>
+            </div>
+
+            <div style={cardStyle}>
+                <label style={labelStyle}>How satisfied are you with your overall online shopping experiences?</label>
+                <select
+                    name="satisfactionLevel"
+                    value={form.satisfactionLevel}
+                    onChange={handleChange}
+                    style={{ width: "100%", padding: "0.5em", borderRadius: 4, border: "1px solid #ddd" }}
+                >
+                    <option value="">Select...</option>
+                    <option value="Very satisfied">Very satisfied</option>
+                    <option value="Satisfied">Satisfied</option>
+                    <option value="Neutral">Neutral</option>
+                    <option value="Unsatisfied">Unsatisfied</option>
+                    <option value="Very unsatisfied">Very unsatisfied</option>
+                </select>
+            </div>
+
+            <div style={cardStyle}>
+                <label style={labelStyle}>Comments (optional):</label>
+                <textarea
+                    name="comments"
+                    value={form.comments}
+                    onChange={handleChange}
+                    rows={3}
+                    style={{ width: "100%", padding: "0.5em", borderRadius: 4, border: "1px solid #ddd" }}
+                />
+            </div>
+
+            <div style={{ ...cardStyle, textAlign: "center", boxShadow: "none", marginBottom: 0 }}>
+                <button
+                    type="submit"
+                    className="btn"
+                    style={{
+                        background: allAnswered ? "#222" : "#aaa",
+                        color: "#fff",
+                        border: "none",
+                        padding: "0.8em",
+                        borderRadius: "8px",
+                        minWidth: "150px",
+                        fontWeight: 600,
+                        fontSize: "1.1rem",
+                        cursor: allAnswered ? "pointer" : "not-allowed",
+                        boxShadow: "0 1px 6px rgba(0,0,0,0.08)",
+                        opacity: allAnswered ? 1 : 0.7,
+                        transition: "background 0.2s, opacity 0.2s",
+                    }}
+                    disabled={!allAnswered}
+                    title={!allAnswered ? "Please answer all required questions before submitting." : ""}
+                >
+                    Submit
+                </button>
+                {!allAnswered && (
+                    <div style={{ color: "#a00", marginTop: "0.7em" }}>
+                        Please answer all required questions before submitting.
                     </div>
                 )}
-                <div className="d-flex justify-content-center">
-                    <button
-                        type="submit"
-                        className="btn btn-dark mt-4"
-                        style={{ minWidth: '150px', fontWeight: 500 }}
-                        disabled={!allAnswered}
-                    >
-                        Submit
-                    </button>
+            </div>
+            {error && (
+                <div style={{ ...cardStyle, color: "#a00", textAlign: "center" }}>
+                    {error}
                 </div>
-            </form>
-        </div>
+            )}
+        </form>
     );
-};
+}
 
 export default Survey;

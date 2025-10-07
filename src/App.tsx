@@ -3,7 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { ShoppingCartProvider } from "./context/ShoppingCartContext";
 import VersionA from './VersionA';
 import VersionB from './VersionB';
-import Survey from './Survey';
+import { Survey } from './Survey';
 import './App.css';
 
 function App() {
@@ -76,6 +76,7 @@ function App() {
               maxWidth: '1200px',
               margin: '0 auto',
               width: '100%',
+              backgroundColor: '#fff',
             }}
           >
             <Survey />
