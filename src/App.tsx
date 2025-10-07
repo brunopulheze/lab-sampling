@@ -7,9 +7,7 @@ import { Survey } from './Survey';
 import './App.css';
 
 function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState(
-    window.innerWidth < 768
-  );
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -45,7 +43,6 @@ function App() {
               backgroundColor: '#fff',
             }}
           >
-            {/* Version A label (mobile only) */}
             {isMobile && (
               <div
                 style={{
@@ -75,11 +72,13 @@ function App() {
                 position: 'relative',
                 overflowX: 'hidden',
                 order: isMobile ? 1 : 0,
-                borderLeft: isMobile ? undefined : '2px solid #333333',
-                borderRight: isMobile ? undefined : '2px solid #333333',
-                borderBottom: isMobile ? undefined : '2px solid #333333',
-                // Mobile: blue border
-                border: isMobile ? '2px solid #0352fc' : undefined,
+                ...(isMobile
+                  ? { border: '2px solid #0352fc', borderRadius: '8px' }
+                  : {
+                    borderLeft: '2px solid #333333',
+                    borderRight: '2px solid #333333',
+                    borderBottom: '2px solid #333333',
+                  }),
               }}
             >
               <VersionA isMobile={isMobile} />
@@ -95,13 +94,14 @@ function App() {
                 position: 'relative',
                 overflowX: 'hidden',
                 order: isMobile ? 2 : 0,
-                borderRight: isMobile ? undefined : '#333333 2px solid',
-                borderBottom: isMobile ? undefined : '#333333 2px solid',
-                // Mobile: red border
-                border: isMobile ? '2px solid #fc0345' : undefined,
+                ...(isMobile
+                  ? { border: '2px solid #fc0345', borderRadius: '8px' }
+                  : {
+                    borderRight: '2px solid #333333',
+                    borderBottom: '2px solid #333333',
+                  }),
               }}
             >
-              {/* Version B label (mobile only, above VersionB content only) */}
               {isMobile && (
                 <div
                   style={{
@@ -113,6 +113,8 @@ function App() {
                     fontSize: "1.15rem",
                     textAlign: "center",
                     letterSpacing: "0.05em",
+                    borderTopLeftRadius: "8px",
+                    borderTopRightRadius: "8px",
                   }}
                 >
                   Version B
@@ -123,11 +125,11 @@ function App() {
           </div>
           <div
             style={{
-              borderLeft: isMobile ? undefined : '2px solid #333333',
+              borderLeft: !isMobile ? '2px solid #333333' : undefined,
               borderBottomLeftRadius: '8px',
-              borderRight: isMobile ? undefined : '2px solid #333333',
+              borderRight: !isMobile ? '2px solid #333333' : undefined,
               borderBottomRightRadius: '8px',
-              borderBottom: isMobile ? undefined : '2px solid #333333',
+              borderBottom: !isMobile ? '2px solid #333333' : undefined,
               maxWidth: '1200px',
               margin: '0 auto',
               width: '100%',
