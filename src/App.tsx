@@ -19,6 +19,21 @@ function useIsMobile() {
 function App() {
   const isMobile = useIsMobile();
 
+  // Instructions block styling
+  const instructionsStyle: React.CSSProperties = {
+    width: "100%",
+    maxWidth: "1200px",
+    margin: "0 auto",
+    background: "#edf6ff",
+    color: "#222",
+    border: "2px solid #333333",
+    padding: "1rem",
+    textAlign: "center",
+    fontWeight: 500,
+    fontSize: isMobile ? "1rem" : "1.15rem",
+    letterSpacing: "0.02em",
+  };
+
   return (
     <AuthProvider>
       <ShoppingCartProvider>
@@ -32,6 +47,11 @@ function App() {
             backgroundColor: '#c0c2c4',
           }}
         >
+          {/* Instructions block element */}
+          <div style={instructionsStyle}>
+            Please compare the layouts of <strong>Version A</strong> and <strong>Version B</strong> below.<br />
+            Scroll down to complete the survey and help us improve!
+          </div>
           <div
             style={{
               display: 'flex',
@@ -43,6 +63,7 @@ function App() {
               backgroundColor: '#fff',
             }}
           >
+            {/* Version A label (mobile only) */}
             {isMobile && (
               <div
                 style={{
@@ -53,8 +74,6 @@ function App() {
                   padding: "0.7rem 1rem",
                   fontSize: "1.15rem",
                   textAlign: "center",
-                  borderTopLeftRadius: "8px",
-                  borderTopRightRadius: "8px",
                   letterSpacing: "0.05em",
                 }}
               >
@@ -73,7 +92,7 @@ function App() {
                 overflowX: 'hidden',
                 order: isMobile ? 1 : 0,
                 ...(isMobile
-                  ? { border: '2px solid #0352fc', borderRadius: '8px' }
+                  ? { border: '2px solid #0352fc' }
                   : {
                     borderLeft: '2px solid #333333',
                     borderRight: '2px solid #333333',
@@ -102,6 +121,7 @@ function App() {
                   }),
               }}
             >
+              {/* Version B label (mobile only, above VersionB content only) */}
               {isMobile && (
                 <div
                   style={{
