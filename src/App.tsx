@@ -50,6 +50,7 @@ function App() {
           {/* Instructions block element */}
           <div style={instructionsStyle}>
             Please compare the layouts of <strong>Version A</strong> and <strong>Version B</strong> below.<br />
+            We would like to compare the UI elements, e.g. color scheme, button placements, etc.<br />
             Scroll down to complete the survey and help us improve!
           </div>
           <div
