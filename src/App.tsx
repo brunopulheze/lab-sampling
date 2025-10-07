@@ -21,7 +21,6 @@ function useIsMobile() {
 function App() {
   const isMobile = useIsMobile();
 
-
   return (
     <AuthProvider>
       <ShoppingCartProvider>
