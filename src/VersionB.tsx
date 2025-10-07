@@ -4,10 +4,12 @@ import { Footer } from './components/Footer';
 import { StoreB } from './pages/StoreB';
 import { ShoppingCart } from './components/ShoppingCart';
 
-const VersionB: React.FC = () => {
+const VersionB: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
     const [isCartOpen, setCartOpen] = useState(false);
 
-    const openCart = () => setCartOpen(true);
+    const openCart = () => {
+        if (!isMobile) setCartOpen(true);
+    };
     const closeCart = () => setCartOpen(false);
 
     return (
@@ -15,13 +17,15 @@ const VersionB: React.FC = () => {
             <Navbar
                 openCart={openCart}
                 containerClass="navbar-b"
-                authBarBgColor="#d7eaf7" // New color for Version B
+                authBarBgColor="#d7eaf7"
             />
             <main>
                 <StoreB />
             </main>
-            <ShoppingCart isOpen={isCartOpen} onClose={closeCart} containerClass="cart-b" placement="left" />
-            <Footer bgColor="#cfc4f2" /> {/* Custom footer background color for Version B */}
+            {!isMobile && (
+                <ShoppingCart isOpen={isCartOpen} onClose={closeCart} containerClass="cart-b" placement="left" />
+            )}
+            <Footer bgColor="#cfc4f2" />
         </div>
     );
 };

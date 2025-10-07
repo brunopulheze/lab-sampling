@@ -9,6 +9,11 @@ type ShoppingCartProps = {
     placement?: "left" | "right";
 };
 
+// Helper to check mobile device
+function isMobileScreen() {
+    return window.innerWidth < 768;
+}
+
 export function ShoppingCart({
     isOpen,
     onClose,
@@ -21,6 +26,8 @@ export function ShoppingCart({
         ? { left: 0, right: "auto" }
         : { right: 0, left: "auto" };
 
+    // Prevent cart rendering on mobile
+    if (isMobileScreen()) return null;
     if (!isOpen) return null;
 
     return (
@@ -40,7 +47,10 @@ export function ShoppingCart({
         >
             {/* Close button */}
             <div style={{ display: "flex", justifyContent: "flex-end", padding: "1rem" }}>
-                <button onClick={onClose} style={{ border: "none", background: "none", fontSize: "1.5rem", cursor: "pointer" }}>
+                <button
+                    onClick={onClose}
+                    style={{ border: "none", background: "none", fontSize: "1.5rem", cursor: "pointer" }}
+                >
                     &times;
                 </button>
             </div>
@@ -58,22 +68,18 @@ export function ShoppingCart({
                         <div className="mt-3">
                             <strong>Total items:</strong> {cartQuantity}
                         </div>
-                        <div className="mt-3 d-flex gap-2">
-                            <button
-                                className="btn btn-success"
-                                onClick={checkout}
-                                disabled={cartItems.length === 0}
-                            >
-                                Checkout
-                            </button>
-                            <button
-                                className="btn btn-outline-secondary"
-                                onClick={clearCart}
-                                disabled={cartItems.length === 0}
-                            >
-                                Clear Cart
-                            </button>
-                        </div>
+                        <button
+                            className="btn btn-success w-100 mt-3"
+                            onClick={checkout}
+                        >
+                            Checkout
+                        </button>
+                        <button
+                            className="btn btn-outline-danger w-100 mt-2"
+                            onClick={clearCart}
+                        >
+                            Clear Cart
+                        </button>
                     </>
                 )}
             </div>

@@ -4,10 +4,14 @@ import { Footer } from './components/Footer';
 import { StoreA } from './pages/StoreA';
 import { ShoppingCart } from './components/ShoppingCart';
 
-const VersionA: React.FC = () => {
+// Receive isMobile as prop from App
+const VersionA: React.FC<{ isMobile?: boolean }> = ({ isMobile }) => {
     const [isCartOpen, setCartOpen] = useState(false);
 
-    const openCart = () => setCartOpen(true);
+    // On mobile, do nothing when trying to open cart
+    const openCart = () => {
+        if (!isMobile) setCartOpen(true);
+    };
     const closeCart = () => setCartOpen(false);
 
     return (
@@ -16,7 +20,10 @@ const VersionA: React.FC = () => {
             <main>
                 <StoreA />
             </main>
-            <ShoppingCart isOpen={isCartOpen} onClose={closeCart} containerClass="cart-a" />
+            {/* Cart drawer inactive on mobile: do not render */}
+            {!isMobile && (
+                <ShoppingCart isOpen={isCartOpen} onClose={closeCart} containerClass="cart-a" />
+            )}
             <Footer />
         </div>
     );

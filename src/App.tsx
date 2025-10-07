@@ -6,7 +6,21 @@ import VersionB from './VersionB';
 import { Survey } from './Survey';
 import './App.css';
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(
+    window.innerWidth < 768
+  );
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return isMobile;
+}
+
 function App() {
+  const isMobile = useIsMobile();
+
   return (
     <AuthProvider>
       <ShoppingCartProvider>
@@ -23,6 +37,7 @@ function App() {
           <div
             style={{
               display: 'flex',
+              flexDirection: isMobile ? 'column' : 'row',
               flex: 1,
               width: '100%',
               maxWidth: '1200px',
@@ -30,22 +45,44 @@ function App() {
               backgroundColor: '#fff',
             }}
           >
+            {/* Version A label (mobile only) */}
+            {isMobile && (
+              <div
+                style={{
+                  width: "100%",
+                  background: "#0352fc",
+                  color: "#fff",
+                  fontWeight: 700,
+                  padding: "0.7rem 1rem",
+                  fontSize: "1.15rem",
+                  textAlign: "center",
+                  borderTopLeftRadius: "8px",
+                  borderTopRightRadius: "8px",
+                  letterSpacing: "0.05em",
+                }}
+              >
+                Version A
+              </div>
+            )}
             <div
               className="version-container"
               style={{
                 flex: 1,
-                borderLeft: '2px solid #333333',
-                borderRight: '2px solid #333333',
-                borderBottom: '2px solid #333333',
                 minWidth: 0,
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative',
                 overflowX: 'hidden',
+                order: isMobile ? 1 : 0,
+                borderLeft: isMobile ? undefined : '2px solid #333333',
+                borderRight: isMobile ? undefined : '2px solid #333333',
+                borderBottom: isMobile ? undefined : '2px solid #333333',
+                borderTopLeftRadius: isMobile ? '8px' : undefined,
+                borderTopRightRadius: isMobile ? '8px' : undefined,
               }}
             >
-              <VersionA />
+              <VersionA isMobile={isMobile} />
             </div>
             <div
               className="version-container"
@@ -55,24 +92,40 @@ function App() {
                 boxSizing: 'border-box',
                 display: 'flex',
                 flexDirection: 'column',
-                // height: '100vh',          // keep this if you want full height, just remove overflow-y
                 position: 'relative',
-                // overflowY: 'auto',        // <-- removed as requested
                 overflowX: 'hidden',
-                borderRight: '#333333 2px solid',
-                borderBottom: '#333333 2px solid',
+                order: isMobile ? 2 : 0,
+                borderRight: isMobile ? undefined : '#333333 2px solid',
+                borderBottom: isMobile ? undefined : '#333333 2px solid',
               }}
             >
-              <VersionB />
+              {/* Version B label (mobile only, above VersionB content only) */}
+              {isMobile && (
+                <div
+                  style={{
+                    width: "100%",
+                    background: "#fc0345",
+                    color: "#fff",
+                    fontWeight: 700,
+                    padding: "0.7rem 1rem",
+                    fontSize: "1.15rem",
+                    textAlign: "center",
+                    letterSpacing: "0.05em",
+                  }}
+                >
+                  Version B
+                </div>
+              )}
+              <VersionB isMobile={isMobile} />
             </div>
           </div>
           <div
             style={{
-              borderLeft: '2px solid #333333',
+              borderLeft: isMobile ? undefined : '2px solid #333333',
               borderBottomLeftRadius: '8px',
-              borderRight: '2px solid #333333',
+              borderRight: isMobile ? undefined : '2px solid #333333',
               borderBottomRightRadius: '8px',
-              borderBottom: '2px solid #333333',
+              borderBottom: isMobile ? undefined : '2px solid #333333',
               maxWidth: '1200px',
               margin: '0 auto',
               width: '100%',
