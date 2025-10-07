@@ -114,7 +114,7 @@ function App() {
                 overflowX: 'hidden',
                 order: isMobile ? 2 : 0,
                 ...(isMobile
-                  ? { border: '2px solid #fc0345', borderRadius: '8px' }
+                  ? { border: '2px solid #fc0345' }
                   : {
                     borderRight: '2px solid #333333',
                     borderBottom: '2px solid #333333',
@@ -133,8 +133,6 @@ function App() {
                     fontSize: "1.15rem",
                     textAlign: "center",
                     letterSpacing: "0.05em",
-                    borderTopLeftRadius: "8px",
-                    borderTopRightRadius: "8px",
                   }}
                 >
                   Version B
