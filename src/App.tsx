@@ -78,8 +78,8 @@ function App() {
                 borderLeft: isMobile ? undefined : '2px solid #333333',
                 borderRight: isMobile ? undefined : '2px solid #333333',
                 borderBottom: isMobile ? undefined : '2px solid #333333',
-                borderTopLeftRadius: isMobile ? '8px' : undefined,
-                borderTopRightRadius: isMobile ? '8px' : undefined,
+                // Mobile: blue border
+                border: isMobile ? '2px solid #0352fc' : undefined,
               }}
             >
               <VersionA isMobile={isMobile} />
@@ -97,6 +97,8 @@ function App() {
                 order: isMobile ? 2 : 0,
                 borderRight: isMobile ? undefined : '#333333 2px solid',
                 borderBottom: isMobile ? undefined : '#333333 2px solid',
+                // Mobile: red border
+                border: isMobile ? '2px solid #fc0345' : undefined,
               }}
             >
               {/* Version B label (mobile only, above VersionB content only) */}
