@@ -15,9 +15,20 @@ type StoreItemType = {
     category: string
 }
 
+function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768)
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
+    return isMobile
+}
+
 export function StoreA() {
     const [storeItems, setStoreItems] = useState<StoreItemType[]>([])
     const { onStoreCheckout } = useShoppingCart()
+    const isMobile = useIsMobile()
 
     // --- Modal State ---
     const [selectedProduct, setSelectedProduct] = useState<StoreItemType | null>(null)
@@ -47,6 +58,9 @@ export function StoreA() {
         }
     }, [onStoreCheckout, fetchProducts])
 
+    // Only show 3 items on mobile, all on desktop/tablet
+    const visibleItems = isMobile ? storeItems.slice(0, 3) : storeItems
+
     return (
         <section className="fade-in custom-width bg-white" style={{ marginBottom: "6rem" }}>
             <Container className="custom-width">
@@ -55,7 +69,7 @@ export function StoreA() {
                 </div>
             </Container>
             <Row md={2} xs={1} lg={3} className="g-1 px-2">
-                {storeItems.map(item => (
+                {visibleItems.map(item => (
                     <Col key={item.id}>
                         <StoreItem {...item} onImageClick={() => handleProductImageClick(item)} />
                     </Col>
